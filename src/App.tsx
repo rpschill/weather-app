@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { getWeatherConditions, getDayOfWeek, getCompasDirection, celsiusToFahrenheit, getUvHealthConcernText } from './utils';
 import LineGraph from './components/LineGraph';
+import InfoBanner from './components/InfoBanner';
+import WeatherDetails from './components/WeatherDetails';
 
 interface Location {
   latitude: number;
@@ -121,32 +123,9 @@ export default function App() {
 
   return (
     <div className="backdrop-grayscale h-dvh">
-      {userLocation && (
+      {userLocation && current && forecast && (
         <div className="flex flex-col">
-          <div className="mx-16 rounded-medium mt-6 border-2 border-gray-500 shadow shadow-white rounded-lg bg-black opacity-75">
-            <div className="flex container mx-auto px-4 h-48">
-              {current && (
-                <div className="flex flex-col my-8 mx-8 items-start w-full">
-                  <p className="font-sans font-semibold text-white text-3xl">{userLocationName}</p>
-                  <div className="flex flex-row mt-6 items-end w-full">
-                    <p className="text-yellow-600/100 font-bold tracking-tighter text-6xl">{celsiusToFahrenheit(current?.data.values.temperature)}°</p>
-                    <p className="text-white font-bold text-lg ml-2">{getWeatherConditions(current?.data.values.weatherCode)}</p>
-
-                    {forecast && (
-                      <div className="flex flex-col items-end grow">
-                        <div className="flex flex-row gap-2.5">
-                          <p className="text-white font-bold tracking-tighter text-lg">{getDayOfWeek(current?.data.time)}</p>
-                          <p className="text-white font-bold tracking-tighter text-lg">{celsiusToFahrenheit(forecast?.timelines.daily[0].values.temperatureMax)}°</p>
-                          <p className="text-white font-bold tracking-tighter text-lg">{celsiusToFahrenheit(forecast?.timelines.daily[0].values.temperatureMin)}°</p>
-                        </div>
-                        <p className="text-white font-bold tracking-tighter text-lg">UV health concern: {current?.data.values.uvHealthConcern} - {getUvHealthConcernText(current?.data.values.uvHealthConcern)}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          <InfoBanner userLocationName={userLocationName} current={current} forecast={forecast} />
 
           <div className="flex flex-row mt-12 mx-16">
             <p className="basis-1/2 text-white text-3xl font-bold text-left">Weather details</p>
@@ -154,36 +133,11 @@ export default function App() {
           </div>
 
           <div className="flex flex-row items-stretch mx-16 gap-x-10">
-            <div className="basis-1/2 mt-6 border-2 border-gray-500 rounded-lg flex flex-col">
-              <div className="flex flex-row grow m-3 space-x-3">
-                <div className="flex flex-col basis-1/3 gap-3 rounded-lg bg-black opacity-75 text-white my-auto min-h-24 justify-center">
-                  <p className="text-gray-500 text-xl">Feels like</p>
-                  <p className="text-white text-2xl">{celsiusToFahrenheit(current?.data.values.temperatureApparent)}°</p>
-                </div>
-                <div className="flex flex-col basis-1/3 gap-3 rounded-lg bg-black opacity-75 text-white my-auto min-h-24 justify-center">
-                  <p className="text-gray-500 text-xl">{getCompasDirection(current?.data.values.windDirection)} wind</p>
-                  <p className="text-white text-2xl">{current?.data.values.windSpeed.toFixed(1)} mi/h</p>
-                </div>
-                <div className="flex flex-col basis-1/3 gap-3 rounded-lg bg-black opacity-75 text-white my-auto min-h-24 justify-center">
-                  <p className="text-gray-500 text-xl">Humidity</p>
-                  <p className="text-white text-2xl">{current?.data.values.humidity}%</p>
-                </div>
-              </div>
-              <div className="flex flex-row grow m-3 space-x-4">
-                <div className="flex flex-col basis-1/3 gap-3 rounded-lg bg-black opacity-75 text-white my-auto min-h-24 justify-center">
-                  <p className="text-gray-500 text-xl">UV</p>
-                  <p className="text-white text-2xl">{current?.data.values.uvIndex}</p>
-                </div>
-                <div className="flex flex-col basis-1/3 gap-3 rounded-lg bg-black opacity-75 text-white my-auto min-h-24 justify-center">
-                  <p className="text-gray-500 text-xl">Visibility</p>
-                  <p className="text-white text-2xl">{current?.data.values.visibility} mi</p>
-                </div>
-                <div className="flex flex-col basis-1/3 gap-3 rounded-lg bg-black opacity-75 text-white my-auto min-h-24 justify-center">
-                  <p className="text-gray-500 text-xl">Pressure</p>
-                  <p className="text-white text-2xl">{current?.data.values.pressureSurfaceLevel.toFixed(0)} hPa</p>
-                </div>
-              </div>
-            </div>
+            {current && (
+              <WeatherDetails current={current} />
+            )}
+
+
             {forecast && (
               <div className="basis-1/2 mt-6 border-2 border-gray-500 rounded-lg flex flex-col bg-black opacity-75">
                 <LineGraph forecastData={forecast} />
