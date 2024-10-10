@@ -34,7 +34,7 @@ export default function App() {
 
   const getLocation = async () => {
     if (navigator.geolocation) {
-      await navigator.geolocation.getCurrentPosition(
+      navigator.geolocation.getCurrentPosition(
         (position) => {
           console.log('position', position);
           const { latitude, longitude } = position.coords;
@@ -50,7 +50,7 @@ export default function App() {
     }
   }
 
-  const getLocationName = async (userLocation: Location | null) => {
+  const getLocationName = async () => {
     if (!userLocation) {
       console.error('No location found.');
     }
@@ -70,7 +70,7 @@ export default function App() {
       })
   }
 
-  const getCurrentWeather = async (userLocation: Location | null) => {
+  const getCurrentWeather = async () => {
     if (!userLocation) {
       console.error('No location found.');
     }
@@ -90,7 +90,7 @@ export default function App() {
       })
   }
   
-  const getWeatherForecast = async (userLocation: Location | null) => {
+  const getWeatherForecast = async () => {
     if (!userLocation) {
       console.error('No location found.');
     }
@@ -113,9 +113,9 @@ export default function App() {
   const getUserData = async () => {
     await getLocation()
       .then(() => {
-        getLocationName(userLocation);
-        getCurrentWeather(userLocation);
-        getWeatherForecast(userLocation);
+        getLocationName();
+        getCurrentWeather();
+        getWeatherForecast();
       })
   }
 
